@@ -30,6 +30,9 @@ One file, no dependencies, no build. Vanilla HTML/CSS/JS, `Press Start 2P`
 from Google Fonts, canvas for level 3, SVG for the meter, WebAudio for the
 sound effects. Runs straight off the filesystem.
 
-Background music: *Slow Jamz*. Drop any `bgm.mp3` next to `index.html` to
-swap the track. If no track loads, the game synthesises its own 68bpm slow
-jam in WebAudio as a fallback.
+## Music
+
+Nothing plays on its own. *Slow Jamz* is armed behind the play button next to
+THE COLLEGE DROPOUT title, and *Stand By Me* comes in on the victory screen
+from 0:23. Swap either by replacing `bgm.mp3` / `standbyme.mp3`. If no track
+loads, the game synthesises its own 68bpm slow jam in WebAudio as a fallback.
