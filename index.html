@@ -325,7 +325,7 @@ const sfx={
    file, and finally to a synthesised 68bpm slow jam.                      */
 const MUSIC=(function(){
   const BPM=68, BEAT=60/BPM, BAR=BEAT*4;
-  let master=null, timer=null, nextBar=0, bar=0, ext=null, muted=false, token=0;
+  let master=null, timer=null, nextBar=0, bar=0, ext=null, muted=false, token=0, curName=null;
   const TRACKS={
     slowjamz : {file:'bgm.mp3',       embed:'bgmdata', vol:0.60, startAt:0},
     standbyme: {file:'standbyme.mp3', embed:'sbmdata', vol:0.65, startAt:23}
@@ -447,14 +447,14 @@ const MUSIC=(function(){
         });
         el.addEventListener('canplay',()=>{
           if(mine!==token) return;                            // superseded
-          el.play().then(()=>{ ext=el; fadeEl(el,muted?0:T.vol,opt.fade||1200); })
+          el.play().then(()=>{ ext=el; curName=name; fadeEl(el,muted?0:T.vol,opt.fade||1200); })
                    .catch(()=>{ if(opt.synthFallback) startSynth(); });
         },{once:true});
         el.addEventListener('error',()=>{ if(mine===token) attempt(i+1); },{once:true});
         el.src=srcs[i]; el.load();
       })(0);
     },
-    stop(ms){ token++; stopEl(ext,ms||500); ext=null; stopSynth(); },
+    stop(ms){ token++; stopEl(ext,ms||500); ext=null; curName=null; stopSynth(); },
     toggle(){
       muted=!muted;
       const a=audio();
@@ -466,6 +466,7 @@ const MUSIC=(function(){
       return !muted;
     },
     get playing(){ return !!ext && !ext.paused; },
+    get current(){ return (ext && !ext.paused) ? curName : null; },
     get muted(){ return muted; }
   };
 })();
@@ -517,8 +518,9 @@ function toast(msg,ms){
 
 const LEVELS=[
   {tag:'LEVEL 1 / 3',title:'THE SF90',
-   hint:'CLICK A BLOCK NEXT TO THE GAP TO SLIDE IT.<br>REBUILD THE FERRARI.',
-   pct:34, build:buildSlider},
+   hint:'CLICK A BLOCK NEXT TO THE GAP TO SLIDE IT.<br>REBUILD THE FERRARI.'
+        +'<br><b class="cue">HIT \u25B6 FOR THE SLOW JAMZ.</b>',
+   pct:34, music:'slowjamz', build:buildSlider},
   {tag:'LEVEL 2 / 3',title:'THE YC STARTUP',
    hint:'CLICK PIPES TO ROTATE THEM 90&deg;.<br>CONNECT SEQUOIA TO THE STARTUP AND LET THE MONEY FLOW.',
    pct:67, build:buildPipes},
@@ -544,6 +546,7 @@ function loadLevel(i){
       +'<i class="tri"></i><em class="eq"><b></b><b></b><b></b></em></button>'
       +'<span>'+L.title+'</span>';
     const b=$('#playBtn');
+    if(MUSIC.current===L.music) b.classList.add('playing');   // track carried over
     b.onclick=()=>{
       if(b.classList.contains('playing')){ MUSIC.stop(400); b.classList.remove('playing'); }
       else { MUSIC.play(L.music,{synthFallback:true}); b.classList.add('playing'); sfx.click(); }
