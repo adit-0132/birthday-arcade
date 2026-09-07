@@ -98,20 +98,20 @@ button{font-family:inherit;font-size:inherit;color:inherit;background:none;borde
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:16px 10px;
 }
 #meterLabel{font-size:8px;color:var(--hot);text-align:center;line-height:2;text-shadow:2px 2px 0 #000}
-#meterPct{font-size:14px;color:var(--neon);text-shadow:2px 2px 0 #000}
+#meterPct{font-size:14px;color:#fff;text-shadow:2px 2px 0 #000}
 .rig{position:relative;width:100%;height:min(48vh,320px);margin:auto 0;display:flex;align-items:center;justify-content:center}
 #meterSvg{width:100%;height:100%;overflow:visible}
 .silo{fill:#1b1838}
 .siloline{fill:none;stroke:#3b3670;stroke-width:6;stroke-linejoin:round;stroke-linecap:round}
 .seg{fill:#231f47}
-.seg.lit{fill:var(--neon)}
-.seg.lit.hot{fill:var(--hot)}
-#segs.glow{filter:drop-shadow(0 0 5px rgba(57,255,136,.65))}
-#segs.hotglow{filter:drop-shadow(0 0 8px rgba(255,46,136,.8))}
+.seg.lit{fill:#fff}
+.seg.lit.hot{fill:#fff}
+#segs.glow{filter:drop-shadow(0 0 6px rgba(255,255,255,.75))}
+#segs.hotglow{filter:drop-shadow(0 0 14px rgba(255,255,255,1))}
 .crease{fill:none;stroke:#3b3670;stroke-width:5;stroke-linecap:round;opacity:.5}
-.tipglow{fill:var(--neon);opacity:0}
+.tipglow{fill:#fff;opacity:0}
 .rig.charged .tipglow{opacity:.85;animation:throb .5s steps(2) infinite}
-.rig.charged .siloline{stroke:#6b4a9c}
+.rig.charged .siloline{stroke:#a9b0e0}
 @keyframes throb{0%{opacity:.3}100%{opacity:1}}
 #lvlDots{display:flex;gap:6px}
 #lvlDots span{width:12px;height:12px;background:#2b2a52;border:2px solid #453f80}
@@ -505,7 +505,7 @@ function climax(){
       const spd=7+Math.random()*13;
       let x=ox, y=oy, vx=Math.cos(ang)*spd, vy=Math.sin(ang)*spd, life=0;
       p.style.left=x+'px'; p.style.top=y+'px';
-      p.style.background=['#fff','#39ff88','#ffd23f'][i%3];
+      p.style.background=['#fff','#f4f7ff','#dfe6ff'][i%3];
       document.body.appendChild(p);
       (function step(){
         x+=vx; y+=vy; vy+=0.55; life++;
