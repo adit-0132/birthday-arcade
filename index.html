@@ -111,6 +111,12 @@ button{font-family:inherit;font-size:inherit;color:inherit;background:none;borde
 .playbtn.playing .eq{display:flex}
 #hint .cue{color:var(--gold);animation:blink 1.1s steps(1,end) infinite}
 #hint{font-size:9px;color:#8b95bd;text-align:center;max-width:660px;line-height:1.85}
+#skipBtn{
+  font-size:8px;color:#6f7aa4;border:2px solid #2b2a52;background:rgba(7,6,15,.75);
+  padding:7px 12px;letter-spacing:1px;flex:0 0 auto;
+}
+#skipBtn:hover:not(:disabled){color:var(--gold);border-color:var(--gold);box-shadow:0 0 12px rgba(255,210,63,.35)}
+#skipBtn:disabled{opacity:.35;cursor:default}
 #levelHost{display:flex;align-items:center;justify-content:center}
 .frame{
   border:4px solid #2b2a52;
@@ -263,6 +269,7 @@ button{font-family:inherit;font-size:inherit;color:inherit;background:none;borde
     <div id="levelTitle">THE SF90</div>
     <div id="levelHost"></div>
     <div id="hint"></div>
+    <button id="skipBtn" type="button" title="jump to the next level">SKIP LEVEL &#9654;&#9654;</button>
   </main>
 </section>
 
@@ -519,7 +526,7 @@ const LEVELS=[
    hint:'ARROWS / WASD TO MOVE. DODGE ATTENDANCE, T1, T2, T3 AND MAJOR PROJECTS.<br>SQUEEZE THROUGH "40 MINIMUM MARKS" \u2014 PAST IT YOU RESPAWN AT THE CHECKPOINT.<br><b class="cue">HIT \u25B6 FOR THE SLOW JAMZ.</b>',
    pct:100, music:'slowjamz', build:buildJIIT}
 ];
-let cur=0, teardown=null;
+let cur=0, teardown=null, advancing=false;
 
 function startGame(){
   cur=0; shown=0; target=0; paintMeter(); markDots(0);
@@ -527,7 +534,9 @@ function startGame(){
 }
 function loadLevel(i){
   if(teardown){ teardown(); teardown=null; }
-  cur=i;
+  cur=i; advancing=false;
+  $('#skipBtn').disabled=false;
+  $('#skipBtn').textContent = i===LEVELS.length-1 ? 'SKIP TO THE END \u25B6\u25B6' : 'SKIP LEVEL \u25B6\u25B6';
   const L=LEVELS[i];
   $('#levelTag').textContent=L.tag;
   if(L.music){
@@ -547,6 +556,9 @@ function loadLevel(i){
   teardown=L.build(host,()=>levelCleared(i));
 }
 function levelCleared(i){
+  if(advancing) return;            // one advance per level, however it was triggered
+  advancing=true;
+  $('#skipBtn').disabled=true;
   sfx.good();
   markDots(i+1);
   const last = i===LEVELS.length-1;
@@ -1052,6 +1064,10 @@ $('#bgmBtn').addEventListener('click',e=>{
 });
 $('#start').addEventListener('click',kick);
 $('#again').addEventListener('click',()=>{ MUSIC.stop(600); show('#start'); });
+$('#skipBtn').addEventListener('click',e=>{
+  e.currentTarget.blur();          // don't let space/enter re-fire it mid-level
+  levelCleared(cur);
+});
 paintMeter();
 })();
 </script>
